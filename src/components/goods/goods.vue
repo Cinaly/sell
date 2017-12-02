@@ -2,7 +2,7 @@
   <div class="goods">
     <div class="menu-wrapper">
       <ul v-show="goods.length>0">
-        <li v-for="item in goods" class="menu-item">
+        <li :class="{current:currentIndex===index}" v-for="(item,index) in goods" class="menu-item" @click="selectMenu(index,$event)">
           <span class="text border-1px">
             <span class="icon" :class="classMap[item.type]" v-show="item.type>0"></span>
             {{item.name}}
@@ -11,11 +11,11 @@
       </ul>
     </div>
     <div class="foods-wrapper">
-      <ul v-show="goods.length>0">
-        <li @click="selectMenu(index)" v-for="(item,index) in goods" class="food-list food-list-hook" :class="{current:currentIndex===index}">
+      <ul>
+        <li  v-for="(item,index) in goods" class="food-list food-list-hook" >
           <h1 class="title">{{item.name}}</h1>
           <ul>
-            <li @click="selectFood(food,$event)" v-for="food in item.foods" class="food-item">
+            <li v-for="(food,index) in item.foods" class="food-item">
               <div class="icon">
                 <img :src="food.icon" width="57" alt="">
               </div>
@@ -36,6 +36,7 @@
         </li>
       </ul>
     </div>
+    <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
   </div>
   <!--<food :food="selectedFood" v-ref:food></food>-->
 </template>
@@ -43,6 +44,7 @@
 <script type="text/ecmascript-6">
   import BScroll from 'better-scroll'
   import food from '../food/food'
+  import shopcart from '../shopcart/shopcart'
 
   export default{
     props: {
@@ -53,7 +55,9 @@
         goods: [],
         listHeight: [],
         scrollY: 0,
-        selectedFood: {}
+        selectedFood: {},
+        menuScroll: Function,
+        foodsScroll: Function
       }
     },
     computed: {
@@ -75,13 +79,13 @@
         this.goods = data.goods
         this.$nextTick(() => {
           this._initScroll()
+          this._calculateHeight()
         })
         console.log(this.goods)
       })
     },
     methods: {
       selectMenu (index, event) {
-        console.log('--------------')
         if (!event._constructed) {
           return
         }
@@ -91,14 +95,15 @@
         console.log(index)
       },
       _initScroll () {
-        const menuScroll = new BScroll('.menu-wrapper', {
+        this.menuScroll = new BScroll('.menu-wrapper', {
           click: true
         })
-        const foodsScroll = new BScroll('.foods-wrapper', {
-          probeType: 3
+        this.foodsScroll = new BScroll('.foods-wrapper', {
+          probeType: 3,
+          click: true
         })
 
-        foodsScroll.on('scroll', (pos) => {
+        this.foodsScroll.on('scroll', (pos) => {
           this.scrollY = Math.abs(Math.round(pos.y))
         })
       },
@@ -115,7 +120,8 @@
 
     },
     components: {
-      food
+      food,
+      shopcart
     }
   }
 </script>
