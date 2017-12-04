@@ -17,17 +17,23 @@
         </div>
       </div>
     </div>
-    <div class=""></div>
+    <transition name="drop">
+      <div class="ball-container">
+        <div class="ball" v-for="ball in balls" v-show="ball.show">
+          <div class="inner"></div>
+        </div>
+      </div>
+    </transition>
     <div class=""></div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  export default{
+  export default {
     props: {
       selectFoods: {
         type: Array,
-        default () {
+        default() {
           return [{price: 20, count: 1}]
         }
       },
@@ -40,22 +46,37 @@
         default: 0
       }
     },
+    data() {
+      return {
+        balls: [
+          {
+            show: false
+          },
+          {
+            show: false
+          },
+          {
+            show: false
+          }
+        ]
+      }
+    },
     computed: {
-      totalPrice () {
+      totalPrice() {
         let total = 0
         this.selectFoods.forEach((food) => {
           total += food.price * food.count
         })
         return total
       },
-      totalCount () {
+      totalCount() {
         let count = 0
         this.selectFoods.forEach((food) => {
           count += food.count
         })
         return count
       },
-      payDesc () {
+      payDesc() {
         if (this.totalPrice === 0) {
           return `¥${this.minPrice}起送`
         } else if (this.totalPrice < this.minPrice) {
@@ -65,12 +86,17 @@
           return '去结算'
         }
       },
-      payClass () {
+      payClass() {
         if (this.totalPrice < this.minPrice) {
           return 'not-enough'
         } else {
           return 'enough'
         }
+      }
+    },
+    methods:{
+      drop(el){
+
       }
     }
   }
@@ -166,4 +192,18 @@
           &.enough
             background: #00b43c
             color: #fff
+    .ball-container
+      .ball
+        position: fixed
+        left: 32px
+        bottom: 22px
+        z-index: 200
+        &.drop-enter-active
+          transition: all 0.4s linear
+          .inner
+            width: 16px
+            height: 16px
+            border-radius: 50%
+            background :rgb(0,160,220)
+            transition: all 0.4s linear
 </style>

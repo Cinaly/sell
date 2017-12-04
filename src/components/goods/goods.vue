@@ -2,7 +2,8 @@
   <div class="goods">
     <div class="menu-wrapper">
       <ul v-show="goods.length>0">
-        <li :class="{current:currentIndex===index}" v-for="(item,index) in goods" class="menu-item" @click="selectMenu(index,$event)">
+        <li :class="{current:currentIndex===index}" v-for="(item,index) in goods" class="menu-item"
+            @click="selectMenu(index,$event)">
           <span class="text border-1px">
             <span class="icon" :class="classMap[item.type]" v-show="item.type>0"></span>
             {{item.name}}
@@ -12,7 +13,7 @@
     </div>
     <div class="foods-wrapper">
       <ul>
-        <li  v-for="(item,index) in goods" class="food-list food-list-hook" >
+        <li v-for="(item,index) in goods" class="food-list food-list-hook">
           <h1 class="title">{{item.name}}</h1>
           <ul>
             <li v-for="(food,index) in item.foods" class="food-item">
@@ -39,7 +40,8 @@
         </li>
       </ul>
     </div>
-    <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
+    <shopcart :select-foods="selectFoods" :delivery-price="seller.deliveryPrice"
+              :min-price="seller.minPrice"></shopcart>
   </div>
   <!--<food :food="selectedFood" v-ref:food></food>-->
 </template>
@@ -49,11 +51,12 @@
   import food from '../food/food'
   import shopcart from '../shopcart/shopcart'
   import cartcontrol from '../cartcontrol/cartcontrol'
-  export default{
+
+  export default {
     props: {
       seller: Object
     },
-    data () {
+    data() {
       return {
         goods: [],
         listHeight: [],
@@ -64,7 +67,7 @@
       }
     },
     computed: {
-      currentIndex () {
+      currentIndex() {
         for (let i = 0; i < this.listHeight.length; i++) {
           let height1 = this.listHeight[i]
           let height2 = this.listHeight[i + 1]
@@ -73,9 +76,20 @@
           }
         }
         return 0
+      },
+      selectFoods() {
+        let foods = []
+        this.goods.forEach((good) => {
+          good.foods.forEach((food) => {
+            if (food.count) {
+              foods.push(food)
+            }
+          })
+        })
+        return foods
       }
     },
-    created () {
+    created() {
       this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
       this.$http.get('../../data.json').then((data) => {
         data = data.body
@@ -88,7 +102,7 @@
       })
     },
     methods: {
-      selectMenu (index, event) {
+      selectMenu(index, event) {
         if (!event._constructed) {
           return
         }
@@ -97,7 +111,7 @@
         this.foodsScroll.scrollToElement(el, 300)
         console.log(index)
       },
-      _initScroll () {
+      _initScroll() {
         this.menuScroll = new BScroll('.menu-wrapper', {
           click: true
         })
@@ -110,7 +124,7 @@
           this.scrollY = Math.abs(Math.round(pos.y))
         })
       },
-      _calculateHeight () {
+      _calculateHeight() {
         let foodList = document.querySelector('.foods-wrapper').getElementsByClassName('food-list-hook')
         let height = 0
         this.listHeight.push(height)
@@ -119,6 +133,9 @@
           height += item.clientHeight
           this.listHeight.push(height)
         }
+      },
+      _drop(target) {
+
       }
 
     },
@@ -126,6 +143,12 @@
       food,
       shopcart,
       cartcontrol
+    },
+
+    events: {
+      'cart.add'(target) {
+        this._drop(target)
+      }
     }
   }
 </script>
@@ -235,6 +258,6 @@
               font-weight: 700
           .cartcontrol-wrapper
             position: absolute
-            right:0
+            right: 0
             bottom: 18px
 </style>
