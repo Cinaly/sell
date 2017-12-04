@@ -26,5 +26,8 @@ module.exports = {
 
     'indent':0,
 
+    'no-tabs':'off',
+    'no-unused-vars': 0
+
   }
 }
