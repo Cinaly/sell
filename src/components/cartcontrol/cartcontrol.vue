@@ -31,7 +31,7 @@
         } else {
           this.food.count++
         }
-        this.$dispatch()
+        this.$emit('cart-add', event.target)
       },
       decreaseCart(event) {
         if (!event._constructed) {
@@ -51,9 +51,9 @@
     .cart-decrease
       display: inline-block
       padding: 6px
-      z-index :10
+      z-index: 10
       transition: all 0.4s linear
-      .inner{
+      .inner {
         display: inline-block
         line-height: 24px
         font-size: 24px
