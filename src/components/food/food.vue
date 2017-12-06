@@ -30,6 +30,10 @@
           <h1 class="title">商品信息</h1>
           <p class="text">{{food.info}}</p>
         </div>
+        <split></split>
+        <div class="rating">
+          <h1 class="title">商品评价</h1>
+        </div>
       </div>
     </div>
   </transition>
