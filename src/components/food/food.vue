@@ -185,4 +185,11 @@
         padding:0 8px
         font-size: 12px
         color: rgb(77,85,93)
+    .rating
+      padding: 18px
+      .title
+        line-height: 14px
+        margin-bottom: 6px
+        font-size: 14px
+        color:rgb(7,17,27)
 </style>
