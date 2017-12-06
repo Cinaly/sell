@@ -259,5 +259,5 @@
           .cartcontrol-wrapper
             position: absolute
             right: 0
-            bottom: 18px
+            bottom: 12px
 </style>
