@@ -1,49 +1,51 @@
 <template>
-  <div class="goods">
-    <div class="menu-wrapper">
-      <ul v-show="goods.length>0">
-        <li :class="{current:currentIndex===index}" v-for="(item,index) in goods" class="menu-item"
-            @click="selectMenu(index,$event)">
+  <div>
+    <div class="goods">
+      <div class="menu-wrapper">
+        <ul v-show="goods.length>0">
+          <li :class="{current:currentIndex===index}" v-for="(item,index) in goods" class="menu-item"
+              @click="selectMenu(index,$event)">
           <span class="text border-1px">
             <span class="icon" :class="classMap[item.type]" v-show="item.type>0"></span>
             {{item.name}}
           </span>
-        </li>
-      </ul>
+          </li>
+        </ul>
+      </div>
+      <div class="foods-wrapper">
+        <ul>
+          <li v-for="(item,index) in goods" class="food-list food-list-hook">
+            <h1 class="title">{{item.name}}</h1>
+            <ul>
+              <li @click="selectFood(food,$event)" v-for="(food,index) in item.foods" class="food-item">
+                <div class="icon">
+                  <img :src="food.icon" width="57" alt="">
+                </div>
+                <div class="content">
+                  <h2 class="name">{{food.name}}</h2>
+                  <p class="desc">{{food.description}}</p>
+                  <div class="extra">
+                    <span class="count">月售{{food.sellCount}}</span>
+                    <span>好评率{{food.rating}}%</span>
+                  </div>
+                  <div class="price">
+                    <span class="now">¥{{food.price}}</span>
+                    <span class="old" v-show="food.oldPrice">¥{{food.oldPrice}}</span>
+                  </div>
+                  <div class="cartcontrol-wrapper">
+                    <cartcontrol :food="food" @add-cart="addCart"></cartcontrol>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <shopcart ref="shopcart" :select-foods="selectFoods" :delivery-price="seller.deliveryPrice"
+                :min-price="seller.minPrice"></shopcart>
     </div>
-    <div class="foods-wrapper">
-      <ul>
-        <li v-for="(item,index) in goods" class="food-list food-list-hook">
-          <h1 class="title">{{item.name}}</h1>
-          <ul>
-            <li v-for="(food,index) in item.foods" class="food-item">
-              <div class="icon">
-                <img :src="food.icon" width="57" alt="">
-              </div>
-              <div class="content">
-                <h2 class="name">{{food.name}}</h2>
-                <p class="desc">{{food.description}}</p>
-                <div class="extra">
-                  <span class="count">月售{{food.sellCount}}</span>
-                  <span>好评率{{food.rating}}%</span>
-                </div>
-                <div class="price">
-                  <span class="now">¥{{food.price}}</span>
-                  <span class="old" v-show="food.oldPrice">¥{{food.oldPrice}}</span>
-                </div>
-                <div class="cartcontrol-wrapper">
-                  <cartcontrol :food="food" @add-cart="addCart"></cartcontrol>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </div>
-    <shopcart ref="shopcart" :select-foods="selectFoods" :delivery-price="seller.deliveryPrice"
-              :min-price="seller.minPrice"></shopcart>
+    <food :food="selectedFood" ref="food"></food>
   </div>
-  <!--<food :food="selectedFood" v-ref:food></food>-->
 </template>
 
 <script type="text/ecmascript-6">
@@ -136,8 +138,14 @@
       },
       addCart(target) {
         this.$emit.shopcart.drop(target)
+      },
+      selectFood(food, event) {
+        if (!event._constructed) {
+          return
+        }
+        this.selectedFood = food
+        this.$refs.food.show()
       }
-
     },
     components: {
       food,
@@ -145,11 +153,6 @@
       cartcontrol
     }
 
-//    events: {
-//      'cart-add'(target) {
-//        this._drop(target)
-//      }
-//    }
   }
 </script>
 
