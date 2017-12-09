@@ -139,6 +139,11 @@
       addCart(target) {
         this.$emit.shopcart.drop(target)
       },
+      _drop(target) {
+        this.$nextTick(() => {
+          this.$refs.shopcart.drop(target)
+        })
+      },
       selectFood(food, event) {
         if (!event._constructed) {
           return

@@ -222,13 +222,14 @@
       width: 100%
       height: 100%
       overflow: auto
-      transition: all 0.5s
       backdrop-filter: blur(10px)
       background: rgba(7, 17, 27, 0.8)
-      &.fade-transition
-        opacity: 1
+      opacity: 1
+      &.fade-enter-active,&.fade-leave-active
+        transition: all 0.5s
       &.fade-enter, &.fade-leave-active
         opacity: 0
+        background: rgba(7, 17, 27, 0)
       .detail-wrapper
         min-height: 100%
         width: 100%
